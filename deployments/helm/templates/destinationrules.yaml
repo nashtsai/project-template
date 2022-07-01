@@ -1,0 +1,11 @@
+{{- if and ( .Capabilities.APIVersions.Has "networking.istio.io/v1beta1" ) .Values.mesh.enabled }}
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: {{ include "your-app.fullname" . }}
+spec:
+  host: {{ include "your-app.fullname" . }}.{{ .Release.Namespace }}.svc.{{ default "cluster.local" .Values.mesh.virtualservice.clusterDomain }}
+  {{- if .Values.mesh.destinationRules.trafficPolicy }}
+  trafficPolicy: {{- toYaml .Values.mesh.destinationRules.trafficPolicy | nindent 4 }}
+  {{- end }}
+{{- end }}

@@ -1,0 +1,35 @@
+# reference: https://docs.buf.build/configuration/v1/buf-yaml
+version: v1
+# Module name syntax (buf.build)/{owner}/{repository}
+name: buf.build/cnx-platform/grpc-go-project-template 
+# Note: the build configuration goes last in this
+# files so we can append excludes at push time.
+build:
+  excludes:
+    - vendor/
+    - .history/
+  
+breaking:
+  use:
+    - FILE
+lint:
+  use:
+    - DEFAULT
+  # ignore_only:
+  #   PACKAGE_DIRECTORY_MATCH:
+  #     - example.proto
+  #   PACKAGE_VERSION_SUFFIX:
+  #     - example.proto
+  #   RPC_REQUEST_RESPONSE_UNIQUE:
+  #     - example.proto
+  #   RPC_RESPONSE_STANDARD_NAME:
+  #     - example.proto
+  enum_zero_value_suffix: _UNSPECIFIED
+  rpc_allow_same_request_response: false
+  rpc_allow_google_protobuf_empty_requests: false
+  rpc_allow_google_protobuf_empty_responses: false
+  service_suffix: Service
+
+deps:
+  - buf.build/googleapis/googleapis
+  - buf.build/grpc-ecosystem/grpc-gateway

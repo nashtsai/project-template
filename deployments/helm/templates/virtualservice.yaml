@@ -1,0 +1,21 @@
+{{- if and ( .Capabilities.APIVersions.Has "networking.istio.io/v1beta1" ) .Values.mesh.enabled }}
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ include "your-app.fullname" . }}
+spec:
+  {{- if .Values.mesh.virtualservice.hosts }}
+  hosts: {{- toYaml .Values.mesh.virtualService.hosts | nindent 4 }}
+  {{- end }}
+  http:
+    - route:
+        {{- range $port := .Values.service.ports }}
+        - destination:
+            host: {{ include "your-app.fullname" . }}.{{ .Release.Namespace }}.svc.{{ default "cluster.local" .Values.mesh.virtualService.clusterDomain }}
+            port:
+              number: {{ .$port.port }}
+        {{- end }}
+      {{- if .Values.mesh.virtualService.retries }}
+      retries: {{- toYaml .Values.mesh.virtualService.retries | nindent 8 }}
+      {{- end }}
+{{- end }}
